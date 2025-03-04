@@ -4,7 +4,6 @@
 import time
 import math
 import network
-import serial
 
 
 import socket
@@ -133,7 +132,7 @@ def setCom():
   global ser  
   port = "COM5"  
   baud = 115200    
-  ser = serial.Serial(port,baud)
+  #ser = serial.Serial(port,baud)
 
 
 
@@ -229,8 +228,9 @@ def calRobotAll():
   else:
     J6caldrive = "0"        
   command = "MJA"+J1caldrive+"500"+"B"+J2caldrive+"500"+"C"+J3caldrive+"500"+"D"+J4caldrive+"500"+"E"+J5caldrive+"500"+"F"+J6caldrive+"500"+"S15G10H10I10K10"+"\n"
-  ser.write(command.encode())
-  ser.flushInput()
+  #ser.write(command.encode())
+  #ser.flushInput()
+  print(command)
   speed = "8"
   time.sleep(2.5)
   calRobot(calaxis,speed)
@@ -294,13 +294,14 @@ def calRobot(calaxis,speed):
   else:
     J6caldrive = "1"    
   command = "LL"+"A"+J1caldrive+J1step+"B"+J2caldrive+J2step+"C"+J3caldrive+J3step+"D"+J4caldrive+J4step+"E"+J5caldrive+J5step+"F"+J6caldrive+J6step+"S"+str(speed)+"\n"  
-  ser.write(command.encode())
-  ser.flushInput()
-  calvalue = ser.read()
+  #ser.write(command.encode())
+  #ser.flushInput()
+  print(command)
+  calvalue = "P"
   #manEntryField.delete(0, 'end')
   #manEntryField.insert(0,calvalue)
   global calStat
-  if (calvalue == b'P'):
+  if (calvalue == "P"):
     calStat = 1
     #calibration.delete(0, END)
     ##J1##
@@ -1096,8 +1097,8 @@ while True:
 
         #################################################
         cmdType = "Move J"
-        command = 'Move J [*]  X) 205.737   Y) 11.523   Z) 148.038   W) -120.064   P) 172.634   R) -110.886   T) 40.0   Speed-15 Ad 20 As 85 Dd 20 Ds 85 $N'
-
+        command = "Move J [*]  X) 205.737   Y) 11.523   Z) 148.038   W) -120.064   P) 172.634   R) -110.886   T) 40.0   Speed-15 Ad 20 As 85 Dd 20 Ds 85 $N"
+        calRobotAll()
         if (cmdType == "Move J"):  
             J1newIndex = command.find("X) ")
             J2newIndex = command.find("Y) ")
@@ -1163,3 +1164,4 @@ while True:
     except OSError as e:
         cl.close()
         print('connection closed')
+
