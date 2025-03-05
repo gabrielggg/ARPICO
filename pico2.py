@@ -236,6 +236,8 @@ def calRobotAll():
   calRobot(calaxis,speed)
 
 
+
+
 def calRobot(calaxis,speed):
   J1axis = calaxis[:-5]
   J2axis = calaxis[1:-4]
@@ -915,6 +917,12 @@ def MoveNew(J1out,J2out,J3out,J4out,J5out,J6out,newSpeed,ACCdur,ACCspd,DECdur,DE
   ###CHECK WITHIN ANGLE LIMITS
   if (J1newAng < J1NegAngLim or J1newAng > J1PosAngLim) or (J2newAng < J2NegAngLim or J2newAng > J2PosAngLim) or (J3newAng < J3NegAngLim or J3newAng > J3PosAngLim) or (J4newAng < J4NegAngLim or J4newAng > J4PosAngLim) or (J5newAng < J5NegAngLim or J5newAng > J5PosAngLim) or (J6newAng < J6NegAngLim or J6newAng > J6PosAngLim):
     #almStatusLab.config(text="AXIS LIMIT", bg = "red")
+    print(J1newAng,J1NegAngLim,J1PosAngLim)
+    print(J2newAng,J2NegAngLim,J2PosAngLim)
+    print(J3newAng,J3NegAngLim,J3PosAngLim)
+    print(J4newAng,J4NegAngLim,J4PosAngLim)
+    print(J5newAng,J5NegAngLim,J5PosAngLim)
+    print(J6newAng,J6NegAngLim,J6PosAngLim)
     print("axis limit") #mejora colocar de cual o cuales axis es el limite
     #almStatusLab2.config(text="AXIS LIMIT", bg = "red")
   else:  
@@ -1078,7 +1086,7 @@ def MoveNew(J1out,J2out,J3out,J4out,J5out,J6out,newSpeed,ACCdur,ACCspd,DECdur,DE
 
 
 ###################################
-
+calRobotAll()
 # Listen for connections, serve client
 while True:
     try:       
@@ -1093,13 +1101,22 @@ while True:
         
         print( 'led on = ' + str(led_on))
         print( 'led off = ' + str(led_off))
-
+        
+        if led_on == 8:
+            print("led on")
+            led.value(1)
+        if led_off == 8:
+            print("led off")
+            led.value(0)
 
         #################################################
         cmdType = "Move J"
-        command = "Move J [*]  X) 205.737   Y) 11.523   Z) 148.038   W) -120.064   P) 172.634   R) -110.886   T) 40.0   Speed-15 Ad 20 As 85 Dd 20 Ds 85 $N"
-        calRobotAll()
-        if (cmdType == "Move J"):  
+        command = "Move J [*]  X) 68.76   Y) -0.024   Z) 733.607   W) -89.978   P) 0.95   R) -90.002   T) 40.0   Speed-25 Ad 15 As 10 Dd 20 Ds 5 $N"
+
+        #command = "Move J [*]  X) 205.737   Y) 11.523   Z) 100.038   W) -120.064   P) 172.634   R) -110.886   T) 40.0   Speed-15 Ad 20 As 85 Dd 20 Ds 85 $N"
+        
+        if (True):
+            print("hola")
             J1newIndex = command.find("X) ")
             J2newIndex = command.find("Y) ")
             J3newIndex = command.find("Z) ")
@@ -1138,12 +1155,7 @@ while True:
         
         #######################################
         
-        if led_on == 8:
-            print("led on")
-            led.value(1)
-        if led_off == 8:
-            print("led off")
-            led.value(0)
+        
         
         ledState = "LED is OFF" if led.value() == 0 else "LED is ON" # a compact if-else statement
         
