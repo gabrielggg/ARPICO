@@ -10,6 +10,17 @@ import socket
 from machine import Pin,UART
 from rotary_irq_rp2 import RotaryIRQ
 
+J1rotdir = 1
+J2rotdir = 1
+J3rotdir = 1
+J4rotdir = 0
+J5rotdir = 1
+J6rotdir = 1
+
+TRACKrotdir = 0
+
+SpeedMult = 200
+
 J1PosAngLim = 170
 J1NegAngLim = -170
 J1StepLim = 15200
@@ -61,6 +72,22 @@ current_val = 0  # Track the last known value of the encoder
 led = Pin(17, Pin.OUT)
 ledState = 'LED State Unknown'
 button = Pin(16, Pin.IN, Pin.PULL_UP)
+
+
+J1stepPin = Pin(5, Pin.OUT)
+J1dirPin = Pin(6, Pin.OUT)
+J2stepPin = Pin(7, Pin.OUT)
+J2dirPin = Pin(8, Pin.OUT)
+J3stepPin = Pin(9, Pin.OUT)
+J3dirPin = Pin(10, Pin.OUT)
+J4stepPin = Pin(11, Pin.OUT)
+J4dirPin = Pin(12, Pin.OUT)
+J5stepPin = Pin(13, Pin.OUT)
+J5dirPin = Pin(14, Pin.OUT)
+J6stepPin = Pin(15, Pin.OUT)
+J6dirPin = Pin(16, Pin.OUT)
+TRstepPin = Pin(17, Pin.OUT)
+TRdirPin = Pin(18, Pin.OUT)
 
 ssid = ''
 password = ''
@@ -886,6 +913,813 @@ def MoveXYZ(CX,CY,CZ,CRx,CRy,CRz,newSpeed,ACCdur,ACCspd,DECdur,DECspd,WC,TCX,TCY
   if Code == 2:
     return(commandCalc)
 
+def driveMotorsJ(J1dir,J2dir,J3dir,J4dir,J5dir,J6dir,TRdir,J1step,J2step,J3step,J4step,J5step,J6step,TRstep,SpeedIn,ACCdur,ACCspd,DCCdur,DCCspd):
+          print("hola mundo")
+          HighStep = J1step
+          if (J2step > HighStep):          
+            HighStep = J2step
+          
+          if (J3step > HighStep):         
+            HighStep = J3step
+          
+          if (J4step > HighStep):          
+            HighStep = J4step
+          
+          if (J5step > HighStep):         
+            HighStep = J5step
+          
+          if (J6step > HighStep):          
+            HighStep = J6step
+          
+          if (TRstep > HighStep):          
+            HighStep = TRstep
+
+          #FIND ACTIVE JOINTS
+          J1active = 0
+          J2active = 0
+          J3active = 0
+          J4active = 0
+          J5active = 0
+          J6active = 0
+          TRactive = 0
+          Jactive = 0
+
+          if (J1step >= 1):
+          
+            J1active = 1;
+          
+          if (J2step >= 1):
+          
+            J2active = 1;
+          
+          if (J3step >= 1):
+          
+            J3active = 1;
+          
+          if (J4step >= 1):
+          
+            J4active = 1;
+          
+          if (J5step >= 1):
+          
+            J5active = 1;
+          
+          if (J6step >= 1):
+          
+            J6active = 1;
+          
+          if (TRstep >= 1):
+          
+            TRactive = 1;
+          
+          Jactive = (J1active + J2active + J3active + J4active + J5active + J6active + TRactive);
+
+          J1_PE = 0;
+          J2_PE = 0;
+          J3_PE = 0;
+          J4_PE = 0;
+          J5_PE = 0;
+          J6_PE = 0;
+          TR_PE = 0;
+
+          J1_SE_1 = 0;
+          J2_SE_1 = 0;
+          J3_SE_1 = 0;
+          J4_SE_1 = 0;
+          J5_SE_1 = 0;
+          J6_SE_1 = 0;
+          TR_SE_1 = 0;
+
+          J1_SE_2 = 0;
+          J2_SE_2 = 0;
+          J3_SE_2 = 0;
+          J4_SE_2 = 0;
+          J5_SE_2 = 0;
+          J6_SE_2 = 0;
+          TR_SE_2 = 0;
+
+          J1_LO_1 = 0;
+          J2_LO_1 = 0;
+          J3_LO_1 = 0;
+          J4_LO_1 = 0;
+          J5_LO_1 = 0;
+          J6_LO_1 = 0;
+          TR_LO_1 = 0;
+
+          J1_LO_2 = 0;
+          J2_LO_2 = 0;
+          J3_LO_2 = 0;
+          J4_LO_2 = 0;
+          J5_LO_2 = 0;
+          J6_LO_2 = 0;
+          TR_LO_2 = 0;
+
+          #reset
+          J1cur = 0;
+          J2cur = 0;
+          J3cur = 0;
+          J4cur = 0;
+          J5cur = 0;
+          J6cur = 0;
+          TRcur = 0;
+
+          J1_PEcur = 0;
+          J2_PEcur = 0;
+          J3_PEcur = 0;
+          J4_PEcur = 0;
+          J5_PEcur = 0;
+          J6_PEcur = 0;
+          TR_PEcur = 0;
+
+          J1_SE_1cur = 0;
+          J2_SE_1cur = 0;
+          J3_SE_1cur = 0;
+          J4_SE_1cur = 0;
+          J5_SE_1cur = 0;
+          J6_SE_1cur = 0;
+          TR_SE_1cur = 0;
+
+          J1_SE_2cur = 0;
+          J2_SE_2cur = 0;
+          J3_SE_2cur = 0;
+          J4_SE_2cur = 0;
+          J5_SE_2cur = 0;
+          J6_SE_2cur = 0;
+          TR_SE_2cur = 0;
+
+          highStepCur = 0;
+          curDelay = 0;
+
+          #SET DIRECTIONS
+
+          ##////// J1 /////////
+          if (J1dir == 1 & J1rotdir == 1):
+            J1dirPin.value(0)
+            #digitalWrite(J1dirPin, LOW);
+          
+          elif (J1dir == 1 & J1rotdir == 0):
+            J1dirPin.value(1)
+            #digitalWrite(J1dirPin, HIGH);
+          
+          elif (J1dir == 0 & J1rotdir == 1):
+            J1dirPin.value(1)
+            #digitalWrite(J1dirPin, HIGH);
+          
+          elif (J1dir == 0 & J1rotdir == 0):
+            J1dirPin.value(0)
+            #digitalWrite(J1dirPin, LOW);
+          
+
+          ##/////// J2 /////////
+          if (J2dir == 1 & J2rotdir == 1):
+            J2dirPin.value(0)
+            #digitalWrite(J2dirPin, LOW);
+          
+          elif (J2dir == 1 & J2rotdir == 0):
+            J2dirPin.value(1)
+            #digitalWrite(J2dirPin, HIGH);
+          
+          elif (J2dir == 0 & J2rotdir == 1):
+            J2dirPin.value(1)
+            #digitalWrite(J2dirPin, HIGH);
+          
+          elif (J2dir == 0 & J2rotdir == 0):
+            J2dirPin.value(0)
+            #digitalWrite(J2dirPin, LOW);
+          
+
+          ##/////// J3 /////////
+          if (J3dir == 1 & J3rotdir == 1):
+            J3dirPin.value(0)
+            #digitalWrite(J3dirPin, LOW);
+          
+          elif (J3dir == 1 & J3rotdir == 0):
+            J3dirPin.value(1)
+            #digitalWrite(J3dirPin, HIGH);
+          
+          elif (J3dir == 0 & J3rotdir == 1):
+            J3dirPin.value(1)
+            #digitalWrite(J3dirPin, HIGH);
+          
+          elif (J3dir == 0 & J3rotdir == 0):
+            J3dirPin.value(0)
+            #digitalWrite(J3dirPin, LOW);
+          
+
+          ##/////// J4 /////////
+          if (J4dir == 1 & J4rotdir == 1):
+            J4dirPin.value(0)
+            #digitalWrite(J4dirPin, LOW);
+          
+          elif (J4dir == 1 & J4rotdir == 0):
+            J4dirPin.value(1)
+            #digitalWrite(J4dirPin, HIGH);
+          
+          elif (J4dir == 0 & J4rotdir == 1):
+            J4dirPin.value(1)
+            #digitalWrite(J4dirPin, HIGH);
+          
+          elif (J4dir == 0 & J4rotdir == 0):
+            J4dirPin.value(0)
+            #digitalWrite(J4dirPin, LOW);
+          
+
+          ##/////// J5 /////////
+          if (J5dir == 1 & J5rotdir == 1):
+            J5dirPin.value(0)
+            #digitalWrite(J5dirPin, LOW);
+          
+          elif (J5dir == 1 & J5rotdir == 0):
+            J5dirPin.value(1)
+            #digitalWrite(J5dirPin, HIGH);
+          
+          elif (J5dir == 0 & J5rotdir == 1):
+            J5dirPin.value(1)
+            #digitalWrite(J5dirPin, HIGH);
+          
+          elif (J5dir == 0 & J5rotdir == 0):
+            J5dirPin.value(0)
+            #digitalWrite(J5dirPin, LOW);
+          
+
+          ##/////// J6 /////////
+          if (J6dir == 1 & J6rotdir == 1):
+            J6dirPin.value(0)
+            #digitalWrite(J6dirPin, LOW);
+          
+          elif (J6dir == 1 & J6rotdir == 0):
+            J6dirPin.value(1)
+            #digitalWrite(J6dirPin, HIGH);
+          
+          elif (J6dir == 0 & J6rotdir == 1):
+            J6dirPin.value(1)
+            #digitalWrite(J6dirPin, HIGH);
+          
+          elif (J6dir == 0 & J6rotdir == 0):
+            J6dirPin.value(0)
+            #digitalWrite(J6dirPin, LOW);
+          
+
+          ##/////// TRACK /////////
+          if (TRdir == 1 & TRACKrotdir == 1):
+            TRdirPin.value(0)
+            #digitalWrite(TRdirPin, LOW);
+          
+          elif (TRdir == 1 & TRACKrotdir == 0):
+            TRdirPin.value(1)
+            #digitalWrite(TRdirPin, HIGH);
+          
+          elif (TRdir == 0 & TRACKrotdir == 1):
+            TRdirPin.value(1)
+            #digitalWrite(TRdirPin, HIGH);
+          
+          elif (TRdir == 0 & TRACKrotdir == 0):
+            TRdirPin.value(0)
+            #digitalWrite(TRdirPin, LOW);
+
+          
+          #/////CALC SPEEDS//////
+          ACCStep = (HighStep * (ACCdur / 100));
+          DCCStep = HighStep - (HighStep * (DCCdur / 100));
+          AdjSpeed = (SpeedIn / 100);
+          #//REG SPEED
+          CalcRegSpeed = (SpeedMult / AdjSpeed);
+          REGSpeed = int(CalcRegSpeed);
+
+          ##//ACC SPEED
+          ACCspdT = (ACCspd / 100);
+          CalcACCSpeed = ((SpeedMult + (SpeedMult / ACCspdT)) / AdjSpeed);
+          ACCSpeed = (CalcACCSpeed);
+          ACCinc = (REGSpeed - ACCSpeed) / ACCStep;
+
+          ##//DCC SPEED
+          DCCspdT = (DCCspd / 100);
+          CalcDCCSpeed = ((SpeedMult + (SpeedMult / DCCspdT)) / AdjSpeed);
+          DCCSpeed = (CalcDCCSpeed);
+          DCCinc = (REGSpeed + DCCSpeed) / DCCStep;
+          DCCSpeed = REGSpeed;
+
+          #///// DRIVE MOTORS /////
+          while (J1cur < J1step | J2cur < J2step | J3cur < J3step | J4cur < J4step | J5cur < J5step | J6cur < J6step | TRcur < TRstep):
+        
+
+            ##////DELAY CALC/////
+            if (highStepCur <= ACCStep):
+            
+                curDelay = (ACCSpeed / Jactive);
+                ACCSpeed = ACCSpeed + ACCinc;
+            
+            elif (highStepCur >= DCCStep):
+            
+                curDelay = (DCCSpeed / Jactive);
+                DCCSpeed = DCCSpeed + DCCinc;
+            
+            else:
+                
+                curDelay = (REGSpeed / Jactive);
+                
+
+            ##/////// J1 ////////////////////////////////
+            ##///find pulse every
+            if (J1cur < J1step):
+                
+                J1_PE = (HighStep / J1step);
+                ##///find left over 1
+                J1_LO_1 = (HighStep - (J1step * J1_PE));
+                ##///find skip 1
+                if (J1_LO_1 > 0):
+                
+                    J1_SE_1 = (HighStep / J1_LO_1);
+                
+                else:
+                
+                    J1_SE_1 = 0;
+                
+                ##///find left over 2
+                if (J1_SE_1 > 0):
+                
+                    J1_LO_2 = HighStep - ((J1step * J1_PE) + ((J1step * J1_PE) / J1_SE_1));
+                
+                else:
+                
+                    J1_LO_2 = 0;
+                
+                ##///find skip 2
+                if (J1_LO_2 > 0):
+                
+                    J1_SE_2 = (HighStep / J1_LO_2);
+                
+                else:
+                
+                    J1_SE_2 = 0;
+                
+                ##/////////  J1  ///////////////
+                if (J1_SE_2 == 0):
+                
+                    J1_SE_2cur = (J1_SE_2 + 1);
+                
+                if (J1_SE_2cur != J1_SE_2):
+                
+                    J1_SE_2cur += 1
+                    if (J1_SE_1 == 0):
+                    
+                        J1_SE_1cur = (J1_SE_1 + 1);
+                    
+                    if (J1_SE_1cur != J1_SE_1):
+                        
+                        J1_SE_1cur += 1
+                        J1_PEcur += 1
+                        if (J1_PEcur == J1_PE):
+                        
+                            J1cur += 1
+                            J1_PEcur = 0;
+                            J1stepPin.value(0)
+                            time.sleep(curDelay / 1000000)
+                            J1stepPin.value(1)
+                            #digitalWrite(J1stepPin, LOW);
+                            #delayMicroseconds(curDelay);
+                            #digitalWrite(J1stepPin, HIGH);
+                        
+                        
+                    else:
+                        
+                        J1_SE_1cur = 0;
+                        
+                
+                else:
+                
+                    J1_SE_2cur = 0;
+                
+                
+
+            #/////// J2 ////////////////////////////////
+            #///find pulse every
+            if (J2cur < J2step):
+                
+                J2_PE = (HighStep / J2step);
+                #///find left over 1
+                J2_LO_1 = (HighStep - (J2step * J2_PE));
+                ///find skip 1
+                if (J2_LO_1 > 0)
+                {
+                    J2_SE_1 = (HighStep / J2_LO_1);
+                }
+                else
+                {
+                    J2_SE_1 = 0;
+                }
+                ///find left over 2
+                if (J2_SE_1 > 0)
+                {
+                    J2_LO_2 = HighStep - ((J2step * J2_PE) + ((J2step * J2_PE) / J2_SE_1));
+                }
+                else
+                {
+                    J2_LO_2 = 0;
+                }
+                ///find skip 2
+                if (J2_LO_2 > 0)
+                {
+                    J2_SE_2 = (HighStep / J2_LO_2);
+                }
+                else
+                {
+                    J2_SE_2 = 0;
+                }
+                /////////  J2  ///////////////
+                if (J2_SE_2 == 0)
+                {
+                    J2_SE_2cur = (J2_SE_2 + 1);
+                }
+                if (J2_SE_2cur != J2_SE_2)
+                {
+                    J2_SE_2cur = ++J2_SE_2cur;
+                    if (J2_SE_1 == 0)
+                    {
+                    J2_SE_1cur = (J2_SE_1 + 1);
+                    }
+                    if (J2_SE_1cur != J2_SE_1)
+                    {
+                    J2_SE_1cur = ++J2_SE_1cur;
+                    J2_PEcur = ++J2_PEcur;
+                    if (J2_PEcur == J2_PE)
+                    {
+                        J2cur = ++J2cur;
+                        J2_PEcur = 0;
+                        digitalWrite(J2stepPin, LOW);
+                        delayMicroseconds(curDelay);
+                        digitalWrite(J2stepPin, HIGH);
+                    }
+                    }
+                    else
+                    {
+                    J2_SE_1cur = 0;
+                    }
+                }
+                else
+                {
+                    J2_SE_2cur = 0;
+                }
+                
+
+            /////// J3 ////////////////////////////////
+            ///find pulse every
+            if (J3cur < J3step)
+            {
+            J3_PE = (HighStep / J3step);
+            ///find left over 1
+            J3_LO_1 = (HighStep - (J3step * J3_PE));
+            ///find skip 1
+            if (J3_LO_1 > 0)
+            {
+                J3_SE_1 = (HighStep / J3_LO_1);
+            }
+            else
+            {
+                J3_SE_1 = 0;
+            }
+            ///find left over 2
+            if (J3_SE_1 > 0)
+            {
+                J3_LO_2 = HighStep - ((J3step * J3_PE) + ((J3step * J3_PE) / J3_SE_1));
+            }
+            else
+            {
+                J3_LO_2 = 0;
+            }
+            ///find skip 2
+            if (J3_LO_2 > 0)
+            {
+                J3_SE_2 = (HighStep / J3_LO_2);
+            }
+            else
+            {
+                J3_SE_2 = 0;
+            }
+            /////////  J3  ///////////////
+            if (J3_SE_2 == 0)
+            {
+                J3_SE_2cur = (J3_SE_2 + 1);
+            }
+            if (J3_SE_2cur != J3_SE_2)
+            {
+                J3_SE_2cur = ++J3_SE_2cur;
+                if (J3_SE_1 == 0)
+                {
+                J3_SE_1cur = (J3_SE_1 + 1);
+                }
+                if (J3_SE_1cur != J3_SE_1)
+                {
+                J3_SE_1cur = ++J3_SE_1cur;
+                J3_PEcur = ++J3_PEcur;
+                if (J3_PEcur == J3_PE)
+                {
+                    J3cur = ++J3cur;
+                    J3_PEcur = 0;
+                    digitalWrite(J3stepPin, LOW);
+                    delayMicroseconds(curDelay);
+                    digitalWrite(J3stepPin, HIGH);
+                }
+                }
+                else
+                {
+                J3_SE_1cur = 0;
+                }
+            }
+            else
+            {
+                J3_SE_2cur = 0;
+            }
+            }
+
+            /////// J4 ////////////////////////////////
+            ///find pulse every
+            if (J4cur < J4step)
+            {
+            J4_PE = (HighStep / J4step);
+            ///find left over 1
+            J4_LO_1 = (HighStep - (J4step * J4_PE));
+            ///find skip 1
+            if (J4_LO_1 > 0)
+            {
+                J4_SE_1 = (HighStep / J4_LO_1);
+            }
+            else
+            {
+                J4_SE_1 = 0;
+            }
+            ///find left over 2
+            if (J4_SE_1 > 0)
+            {
+                J4_LO_2 = HighStep - ((J4step * J4_PE) + ((J4step * J4_PE) / J4_SE_1));
+            }
+            else
+            {
+                J4_LO_2 = 0;
+            }
+            ///find skip 2
+            if (J4_LO_2 > 0)
+            {
+                J4_SE_2 = (HighStep / J4_LO_2);
+            }
+            else
+            {
+                J4_SE_2 = 0;
+            }
+            /////////  J4  ///////////////
+            if (J4_SE_2 == 0)
+            {
+                J4_SE_2cur = (J4_SE_2 + 1);
+            }
+            if (J4_SE_2cur != J4_SE_2)
+            {
+                J4_SE_2cur = ++J4_SE_2cur;
+                if (J4_SE_1 == 0)
+                {
+                J4_SE_1cur = (J4_SE_1 + 1);
+                }
+                if (J4_SE_1cur != J4_SE_1)
+                {
+                J4_SE_1cur = ++J4_SE_1cur;
+                J4_PEcur = ++J4_PEcur;
+                if (J4_PEcur == J4_PE)
+                {
+                    J4cur = ++J4cur;
+                    J4_PEcur = 0;
+                    digitalWrite(J4stepPin, LOW);
+                    delayMicroseconds(curDelay);
+                    digitalWrite(J4stepPin, HIGH);
+                }
+                }
+                else
+                {
+                J4_SE_1cur = 0;
+                }
+            }
+            else
+            {
+                J4_SE_2cur = 0;
+            }
+            }
+
+            /////// J5 ////////////////////////////////
+            ///find pulse every
+            if (J5cur < J5step)
+            {
+            J5_PE = (HighStep / J5step);
+            ///find left over 1
+            J5_LO_1 = (HighStep - (J5step * J5_PE));
+            ///find skip 1
+            if (J5_LO_1 > 0)
+            {
+                J5_SE_1 = (HighStep / J5_LO_1);
+            }
+            else
+            {
+                J5_SE_1 = 0;
+            }
+            ///find left over 2
+            if (J5_SE_1 > 0)
+            {
+                J5_LO_2 = HighStep - ((J5step * J5_PE) + ((J5step * J5_PE) / J5_SE_1));
+            }
+            else
+            {
+                J5_LO_2 = 0;
+            }
+            ///find skip 2
+            if (J5_LO_2 > 0)
+            {
+                J5_SE_2 = (HighStep / J5_LO_2);
+            }
+            else
+            {
+                J5_SE_2 = 0;
+            }
+            /////////  J5  ///////////////
+            if (J5_SE_2 == 0)
+            {
+                J5_SE_2cur = (J5_SE_2 + 1);
+            }
+            if (J5_SE_2cur != J5_SE_2)
+            {
+                J5_SE_2cur = ++J5_SE_2cur;
+                if (J5_SE_1 == 0)
+                {
+                J5_SE_1cur = (J5_SE_1 + 1);
+                }
+                if (J5_SE_1cur != J5_SE_1)
+                {
+                J5_SE_1cur = ++J5_SE_1cur;
+                J5_PEcur = ++J5_PEcur;
+                if (J5_PEcur == J5_PE)
+                {
+                    J5cur = ++J5cur;
+                    J5_PEcur = 0;
+                    digitalWrite(J5stepPin, LOW);
+                    delayMicroseconds(curDelay);
+                    digitalWrite(J5stepPin, HIGH);
+                }
+                }
+                else
+                {
+                J5_SE_1cur = 0;
+                }
+            }
+            else
+            {
+                J5_SE_2cur = 0;
+            }
+            }
+
+            /////// J6 ////////////////////////////////
+            ///find pulse every
+            if (J6cur < J6step)
+            {
+            J6_PE = (HighStep / J6step);
+            ///find left over 1
+            J6_LO_1 = (HighStep - (J6step * J6_PE));
+            ///find skip 1
+            if (J6_LO_1 > 0)
+            {
+                J6_SE_1 = (HighStep / J6_LO_1);
+            }
+            else
+            {
+                J6_SE_1 = 0;
+            }
+            ///find left over 2
+            if (J6_SE_1 > 0)
+            {
+                J6_LO_2 = HighStep - ((J6step * J6_PE) + ((J6step * J6_PE) / J6_SE_1));
+            }
+            else
+            {
+                J6_LO_2 = 0;
+            }
+            ///find skip 2
+            if (J6_LO_2 > 0)
+            {
+                J6_SE_2 = (HighStep / J6_LO_2);
+            }
+            else
+            {
+                J6_SE_2 = 0;
+            }
+            /////////  J6  ///////////////
+            if (J6_SE_2 == 0)
+            {
+                J6_SE_2cur = (J6_SE_2 + 1);
+            }
+            if (J6_SE_2cur != J6_SE_2)
+            {
+                J6_SE_2cur = ++J6_SE_2cur;
+                if (J6_SE_1 == 0)
+                {
+                J6_SE_1cur = (J6_SE_1 + 1);
+                }
+                if (J6_SE_1cur != J6_SE_1)
+                {
+                J6_SE_1cur = ++J6_SE_1cur;
+                J6_PEcur = ++J6_PEcur;
+                if (J6_PEcur == J6_PE)
+                {
+                    J6cur = ++J6cur;
+                    J6_PEcur = 0;
+                    digitalWrite(J6stepPin, LOW);
+                    delayMicroseconds(curDelay);
+                    digitalWrite(J6stepPin, HIGH);
+                }
+                }
+                else
+                {
+                J6_SE_1cur = 0;
+                }
+            }
+            else
+            {
+                J6_SE_2cur = 0;
+            }
+            }
+
+            /////// TR ////////////////////////////////
+            ///find pulse every
+            if (TRcur < TRstep)
+            {
+            TR_PE = (HighStep / TRstep);
+            ///find left over 1
+            TR_LO_1 = (HighStep - (TRstep * TR_PE));
+            ///find skip 1
+            if (TR_LO_1 > 0)
+            {
+                TR_SE_1 = (HighStep / TR_LO_1);
+            }
+            else
+            {
+                TR_SE_1 = 0;
+            }
+            ///find left over 2
+            if (TR_SE_1 > 0)
+            {
+                TR_LO_2 = HighStep - ((TRstep * TR_PE) + ((TRstep * TR_PE) / TR_SE_1));
+            }
+            else
+            {
+                TR_LO_2 = 0;
+            }
+            ///find skip 2
+            if (TR_LO_2 > 0)
+            {
+                TR_SE_2 = (HighStep / TR_LO_2);
+            }
+            else
+            {
+                TR_SE_2 = 0;
+            }
+            /////////  TR  ///////////////
+            if (TR_SE_2 == 0)
+            {
+                TR_SE_2cur = (TR_SE_2 + 1);
+            }
+            if (TR_SE_2cur != TR_SE_2)
+            {
+                TR_SE_2cur = ++TR_SE_2cur;
+                if (TR_SE_1 == 0)
+                {
+                TR_SE_1cur = (TR_SE_1 + 1);
+                }
+                if (TR_SE_1cur != TR_SE_1)
+                {
+                TR_SE_1cur = ++TR_SE_1cur;
+                TR_PEcur = ++TR_PEcur;
+                if (TR_PEcur == TR_PE)
+                {
+                    TRcur = ++TRcur;
+                    TR_PEcur = 0;
+                    digitalWrite(TRstepPin, LOW);
+                    delayMicroseconds(curDelay);
+                    digitalWrite(TRstepPin, HIGH);
+                }
+                }
+                else
+                {
+                TR_SE_1cur = 0;
+                }
+            }
+            else
+            {
+                TR_SE_2cur = 0;
+            }
+            }
+
+
+            // inc cur step
+            highStepCur = ++highStepCur;
+
+
+        
+          
+
 def MoveNew(J1out,J2out,J3out,J4out,J5out,J6out,newSpeed,ACCdur,ACCspd,DECdur,DECspd,Track,Code):
   global xboxUse
   #if xboxUse != 1:
@@ -1061,6 +1895,11 @@ def MoveNew(J1out,J2out,J3out,J4out,J5out,J6out,newSpeed,ACCdur,ACCspd,DECdur,DE
     commandCalc = "MJA"+J1dir+J1steps+"B"+J2dir+J2steps+"C"+J3dir+J3steps+"D"+J4dir+J4steps+"E"+J5dir+J5steps+"F"+J6dir+J6steps+"T"+"1"+"0"+"S"+newSpeed+"G"+ACCdur+"H"+ACCspd+"I"+DECdur+"K"+DECspd+"\n"
     if Code == 0:
       print(commandCalc)
+      #######nuevo modulo
+      driveMotorsJ(J1dir,J2dir,J3dir,J4dir,J5dir,J6dir,1,J1steps,J2steps,J3steps,J4steps,J5steps,J6steps,0,newSpeed,ACCdur,ACCspd,DECdur,DECspd)
+
+      
+      #######
       #ser.write(commandCalc.encode())
       #print(commandCalc)
       #ser.flushInput()
