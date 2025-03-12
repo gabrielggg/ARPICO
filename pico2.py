@@ -1299,422 +1299,440 @@ def driveMotorsJ(J1dir,J2dir,J3dir,J4dir,J5dir,J6dir,TRdir,J1step,J2step,J3step,
                 J2_PE = (HighStep / J2step);
                 #///find left over 1
                 J2_LO_1 = (HighStep - (J2step * J2_PE));
-                ///find skip 1
-                if (J2_LO_1 > 0)
-                {
+                #///find skip 1
+                if (J2_LO_1 > 0):
+                    
                     J2_SE_1 = (HighStep / J2_LO_1);
-                }
-                else
-                {
+                    
+                else:
+                    
                     J2_SE_1 = 0;
-                }
-                ///find left over 2
-                if (J2_SE_1 > 0)
-                {
+                    
+                #///find left over 2
+                if (J2_SE_1 > 0):
+                
                     J2_LO_2 = HighStep - ((J2step * J2_PE) + ((J2step * J2_PE) / J2_SE_1));
-                }
-                else
-                {
+                
+                else:
+                
                     J2_LO_2 = 0;
-                }
-                ///find skip 2
-                if (J2_LO_2 > 0)
-                {
+                
+                #///find skip 2
+                if (J2_LO_2 > 0):
+                
                     J2_SE_2 = (HighStep / J2_LO_2);
-                }
-                else
-                {
+                
+                else:
+                
                     J2_SE_2 = 0;
-                }
-                /////////  J2  ///////////////
-                if (J2_SE_2 == 0)
-                {
+                
+                #/////////  J2  ///////////////
+                if (J2_SE_2 == 0):
+                
                     J2_SE_2cur = (J2_SE_2 + 1);
-                }
-                if (J2_SE_2cur != J2_SE_2)
-                {
-                    J2_SE_2cur = ++J2_SE_2cur;
-                    if (J2_SE_1 == 0)
-                    {
-                    J2_SE_1cur = (J2_SE_1 + 1);
-                    }
-                    if (J2_SE_1cur != J2_SE_1)
-                    {
-                    J2_SE_1cur = ++J2_SE_1cur;
-                    J2_PEcur = ++J2_PEcur;
-                    if (J2_PEcur == J2_PE)
-                    {
-                        J2cur = ++J2cur;
-                        J2_PEcur = 0;
-                        digitalWrite(J2stepPin, LOW);
-                        delayMicroseconds(curDelay);
-                        digitalWrite(J2stepPin, HIGH);
-                    }
-                    }
-                    else
-                    {
-                    J2_SE_1cur = 0;
-                    }
-                }
-                else
-                {
+                
+                if (J2_SE_2cur != J2_SE_2):
+                
+                    J2_SE_2cur += 1;
+                    if (J2_SE_1 == 0):
+                    
+                        J2_SE_1cur = (J2_SE_1 + 1);
+                    
+                    if (J2_SE_1cur != J2_SE_1):
+                        
+                        J2_SE_1cur += 1;
+                        J2_PEcur += 1;
+                        if (J2_PEcur == J2_PE):
+                        
+                            J2cur += 1;
+                            J2_PEcur = 0;
+                            J2stepPin.value(0)
+                            time.sleep(curDelay / 1000000)
+                            J2stepPin.value(1)
+                            #digitalWrite(J2stepPin, LOW);
+                            #delayMicroseconds(curDelay);
+                            #digitalWrite(J2stepPin, HIGH);
+                        
+                        
+                    else:
+                    
+                        J2_SE_1cur = 0;
+                    
+                
+                else:
+                
                     J2_SE_2cur = 0;
-                }
+                
                 
 
-            /////// J3 ////////////////////////////////
-            ///find pulse every
-            if (J3cur < J3step)
-            {
-            J3_PE = (HighStep / J3step);
-            ///find left over 1
-            J3_LO_1 = (HighStep - (J3step * J3_PE));
-            ///find skip 1
-            if (J3_LO_1 > 0)
-            {
-                J3_SE_1 = (HighStep / J3_LO_1);
-            }
-            else
-            {
-                J3_SE_1 = 0;
-            }
-            ///find left over 2
-            if (J3_SE_1 > 0)
-            {
-                J3_LO_2 = HighStep - ((J3step * J3_PE) + ((J3step * J3_PE) / J3_SE_1));
-            }
-            else
-            {
-                J3_LO_2 = 0;
-            }
-            ///find skip 2
-            if (J3_LO_2 > 0)
-            {
-                J3_SE_2 = (HighStep / J3_LO_2);
-            }
-            else
-            {
-                J3_SE_2 = 0;
-            }
-            /////////  J3  ///////////////
-            if (J3_SE_2 == 0)
-            {
-                J3_SE_2cur = (J3_SE_2 + 1);
-            }
-            if (J3_SE_2cur != J3_SE_2)
-            {
-                J3_SE_2cur = ++J3_SE_2cur;
-                if (J3_SE_1 == 0)
-                {
-                J3_SE_1cur = (J3_SE_1 + 1);
-                }
-                if (J3_SE_1cur != J3_SE_1)
-                {
-                J3_SE_1cur = ++J3_SE_1cur;
-                J3_PEcur = ++J3_PEcur;
-                if (J3_PEcur == J3_PE)
-                {
-                    J3cur = ++J3cur;
-                    J3_PEcur = 0;
-                    digitalWrite(J3stepPin, LOW);
-                    delayMicroseconds(curDelay);
-                    digitalWrite(J3stepPin, HIGH);
-                }
-                }
-                else
-                {
-                J3_SE_1cur = 0;
-                }
-            }
-            else
-            {
-                J3_SE_2cur = 0;
-            }
-            }
+            #/////// J3 ////////////////////////////////
+            #///find pulse every
+            if (J3cur < J3step):
+                
+                J3_PE = (HighStep / J3step);
+                #///find left over 1
+                J3_LO_1 = (HighStep - (J3step * J3_PE));
+                #///find skip 1
+                if (J3_LO_1 > 0):
+                
+                    J3_SE_1 = (HighStep / J3_LO_1);
+                
+                else:
+                
+                    J3_SE_1 = 0;
+                
+                #///find left over 2
+                if (J3_SE_1 > 0):
+                
+                    J3_LO_2 = HighStep - ((J3step * J3_PE) + ((J3step * J3_PE) / J3_SE_1));
+                
+                else:
+                
+                    J3_LO_2 = 0;
+                
+                #///find skip 2
+                if (J3_LO_2 > 0):
+                
+                    J3_SE_2 = (HighStep / J3_LO_2);
+                
+                else:
+                
+                    J3_SE_2 = 0;
+                
+                #/////////  J3  ///////////////
+                if (J3_SE_2 == 0):
+                
+                    J3_SE_2cur = (J3_SE_2 + 1);
+                
+                if (J3_SE_2cur != J3_SE_2):
+                
+                    J3_SE_2cur += 1;
+                    if (J3_SE_1 == 0):
+                    
+                        J3_SE_1cur = (J3_SE_1 + 1);
+                    
+                    if (J3_SE_1cur != J3_SE_1):
+                        
+                        J3_SE_1cur += 1;
+                        J3_PEcur += 1;
+                        if (J3_PEcur == J3_PE):
+                        
+                            J3cur += 1;
+                            J3_PEcur = 0;
+                            J3stepPin.value(0)
+                            time.sleep(curDelay / 1000000)
+                            J3stepPin.value(1)
+                            #digitalWrite(J3stepPin, LOW);
+                            #delayMicroseconds(curDelay);
+                            #digitalWrite(J3stepPin, HIGH);
+                        
+                        
+                    else:
+                    
+                        J3_SE_1cur = 0;
+                    
+                
+                else:
+                
+                    J3_SE_2cur = 0;
+                
+                
 
-            /////// J4 ////////////////////////////////
-            ///find pulse every
-            if (J4cur < J4step)
-            {
-            J4_PE = (HighStep / J4step);
-            ///find left over 1
-            J4_LO_1 = (HighStep - (J4step * J4_PE));
-            ///find skip 1
-            if (J4_LO_1 > 0)
-            {
-                J4_SE_1 = (HighStep / J4_LO_1);
-            }
-            else
-            {
-                J4_SE_1 = 0;
-            }
-            ///find left over 2
-            if (J4_SE_1 > 0)
-            {
-                J4_LO_2 = HighStep - ((J4step * J4_PE) + ((J4step * J4_PE) / J4_SE_1));
-            }
-            else
-            {
-                J4_LO_2 = 0;
-            }
-            ///find skip 2
-            if (J4_LO_2 > 0)
-            {
-                J4_SE_2 = (HighStep / J4_LO_2);
-            }
-            else
-            {
-                J4_SE_2 = 0;
-            }
-            /////////  J4  ///////////////
-            if (J4_SE_2 == 0)
-            {
-                J4_SE_2cur = (J4_SE_2 + 1);
-            }
-            if (J4_SE_2cur != J4_SE_2)
-            {
-                J4_SE_2cur = ++J4_SE_2cur;
-                if (J4_SE_1 == 0)
-                {
-                J4_SE_1cur = (J4_SE_1 + 1);
-                }
-                if (J4_SE_1cur != J4_SE_1)
-                {
-                J4_SE_1cur = ++J4_SE_1cur;
-                J4_PEcur = ++J4_PEcur;
-                if (J4_PEcur == J4_PE)
-                {
-                    J4cur = ++J4cur;
-                    J4_PEcur = 0;
-                    digitalWrite(J4stepPin, LOW);
-                    delayMicroseconds(curDelay);
-                    digitalWrite(J4stepPin, HIGH);
-                }
-                }
-                else
-                {
-                J4_SE_1cur = 0;
-                }
-            }
-            else
-            {
-                J4_SE_2cur = 0;
-            }
-            }
+            #/////// J4 ////////////////////////////////
+            #///find pulse every
+            if (J4cur < J4step):
+                
+                J4_PE = (HighStep / J4step);
+                #///find left over 1
+                J4_LO_1 = (HighStep - (J4step * J4_PE));
+                #///find skip 1
+                if (J4_LO_1 > 0):
+                
+                    J4_SE_1 = (HighStep / J4_LO_1);
+                
+                else:
+                
+                    J4_SE_1 = 0;
+                
+                #///find left over 2
+                if (J4_SE_1 > 0):
+                
+                    J4_LO_2 = HighStep - ((J4step * J4_PE) + ((J4step * J4_PE) / J4_SE_1));
+                
+                else:
+                
+                    J4_LO_2 = 0;
+                
+                #///find skip 2
+                if (J4_LO_2 > 0):
+                
+                    J4_SE_2 = (HighStep / J4_LO_2);
+                
+                else:
+                
+                    J4_SE_2 = 0;
+                
+                #/////////  J4  ///////////////
+                if (J4_SE_2 == 0):
+                
+                    J4_SE_2cur = (J4_SE_2 + 1);
+                
+                if (J4_SE_2cur != J4_SE_2):
+                
+                    J4_SE_2cur += 1;
+                    if (J4_SE_1 == 0):
+                    
+                        J4_SE_1cur = (J4_SE_1 + 1);
+                    
+                    if (J4_SE_1cur != J4_SE_1):
+                        
+                        J4_SE_1cur += 1;
+                        J4_PEcur += 1;
+                        if (J4_PEcur == J4_PE):
+                        
+                            J4cur += 1;
+                            J4_PEcur = 0;
+                            #digitalWrite(J4stepPin, LOW);
+                            #delayMicroseconds(curDelay);
+                            #digitalWrite(J4stepPin, HIGH);
+                            J4stepPin.value(0)
+                            time.sleep(curDelay / 1000000)
+                            J4stepPin.value(1)
+                        
+                        
+                    else:
+                    
+                        J4_SE_1cur = 0;
+                    
+                
+                else:
+                
+                    J4_SE_2cur = 0;
+                
+                
 
-            /////// J5 ////////////////////////////////
-            ///find pulse every
-            if (J5cur < J5step)
-            {
-            J5_PE = (HighStep / J5step);
-            ///find left over 1
-            J5_LO_1 = (HighStep - (J5step * J5_PE));
-            ///find skip 1
-            if (J5_LO_1 > 0)
-            {
-                J5_SE_1 = (HighStep / J5_LO_1);
-            }
-            else
-            {
-                J5_SE_1 = 0;
-            }
-            ///find left over 2
-            if (J5_SE_1 > 0)
-            {
-                J5_LO_2 = HighStep - ((J5step * J5_PE) + ((J5step * J5_PE) / J5_SE_1));
-            }
-            else
-            {
-                J5_LO_2 = 0;
-            }
-            ///find skip 2
-            if (J5_LO_2 > 0)
-            {
-                J5_SE_2 = (HighStep / J5_LO_2);
-            }
-            else
-            {
-                J5_SE_2 = 0;
-            }
-            /////////  J5  ///////////////
-            if (J5_SE_2 == 0)
-            {
-                J5_SE_2cur = (J5_SE_2 + 1);
-            }
-            if (J5_SE_2cur != J5_SE_2)
-            {
-                J5_SE_2cur = ++J5_SE_2cur;
-                if (J5_SE_1 == 0)
-                {
-                J5_SE_1cur = (J5_SE_1 + 1);
-                }
-                if (J5_SE_1cur != J5_SE_1)
-                {
-                J5_SE_1cur = ++J5_SE_1cur;
-                J5_PEcur = ++J5_PEcur;
-                if (J5_PEcur == J5_PE)
-                {
-                    J5cur = ++J5cur;
-                    J5_PEcur = 0;
-                    digitalWrite(J5stepPin, LOW);
-                    delayMicroseconds(curDelay);
-                    digitalWrite(J5stepPin, HIGH);
-                }
-                }
-                else
-                {
-                J5_SE_1cur = 0;
-                }
-            }
-            else
-            {
-                J5_SE_2cur = 0;
-            }
-            }
+            #/////// J5 ////////////////////////////////
+            #///find pulse every
+            if (J5cur < J5step):
+                
+                J5_PE = (HighStep / J5step);
+                #///find left over 1
+                J5_LO_1 = (HighStep - (J5step * J5_PE));
+                #///find skip 1
+                if (J5_LO_1 > 0):
+                
+                    J5_SE_1 = (HighStep / J5_LO_1);
+                
+                else:
+                
+                    J5_SE_1 = 0;
+                
+                #///find left over 2
+                if (J5_SE_1 > 0):
+                
+                    J5_LO_2 = HighStep - ((J5step * J5_PE) + ((J5step * J5_PE) / J5_SE_1));
+                
+                else:
+                
+                    J5_LO_2 = 0;
+                
+                #///find skip 2
+                if (J5_LO_2 > 0):
+                
+                    J5_SE_2 = (HighStep / J5_LO_2);
+                
+                else:
+                
+                    J5_SE_2 = 0;
+                
+                #/////////  J5  ///////////////
+                if (J5_SE_2 == 0):
+                
+                    J5_SE_2cur = (J5_SE_2 + 1);
+                
+                if (J5_SE_2cur != J5_SE_2):
+                
+                    J5_SE_2cur += 1;
+                    if (J5_SE_1 == 0):
+                    
+                        J5_SE_1cur = (J5_SE_1 + 1);
+                    
+                    if (J5_SE_1cur != J5_SE_1):
+                        
+                        J5_SE_1cur += 1;
+                        J5_PEcur += 1;
+                        if (J5_PEcur == J5_PE):
+                        
+                            J5cur += 1;
+                            J5_PEcur = 0;
+                            #digitalWrite(J5stepPin, LOW);
+                            #delayMicroseconds(curDelay);
+                            #digitalWrite(J5stepPin, HIGH);
+                            J5stepPin.value(0)
+                            time.sleep(curDelay / 1000000)
+                            J5stepPin.value(1)
+                        
+                        
+                    else:
+                    
+                        J5_SE_1cur = 0;
+                    
+                
+                else:
+                
+                    J5_SE_2cur = 0;
+                
+                
 
-            /////// J6 ////////////////////////////////
-            ///find pulse every
-            if (J6cur < J6step)
-            {
-            J6_PE = (HighStep / J6step);
-            ///find left over 1
-            J6_LO_1 = (HighStep - (J6step * J6_PE));
-            ///find skip 1
-            if (J6_LO_1 > 0)
-            {
-                J6_SE_1 = (HighStep / J6_LO_1);
-            }
-            else
-            {
-                J6_SE_1 = 0;
-            }
-            ///find left over 2
-            if (J6_SE_1 > 0)
-            {
-                J6_LO_2 = HighStep - ((J6step * J6_PE) + ((J6step * J6_PE) / J6_SE_1));
-            }
-            else
-            {
-                J6_LO_2 = 0;
-            }
-            ///find skip 2
-            if (J6_LO_2 > 0)
-            {
-                J6_SE_2 = (HighStep / J6_LO_2);
-            }
-            else
-            {
-                J6_SE_2 = 0;
-            }
-            /////////  J6  ///////////////
-            if (J6_SE_2 == 0)
-            {
-                J6_SE_2cur = (J6_SE_2 + 1);
-            }
-            if (J6_SE_2cur != J6_SE_2)
-            {
-                J6_SE_2cur = ++J6_SE_2cur;
-                if (J6_SE_1 == 0)
-                {
-                J6_SE_1cur = (J6_SE_1 + 1);
-                }
-                if (J6_SE_1cur != J6_SE_1)
-                {
-                J6_SE_1cur = ++J6_SE_1cur;
-                J6_PEcur = ++J6_PEcur;
-                if (J6_PEcur == J6_PE)
-                {
-                    J6cur = ++J6cur;
-                    J6_PEcur = 0;
-                    digitalWrite(J6stepPin, LOW);
-                    delayMicroseconds(curDelay);
-                    digitalWrite(J6stepPin, HIGH);
-                }
-                }
-                else
-                {
-                J6_SE_1cur = 0;
-                }
-            }
-            else
-            {
-                J6_SE_2cur = 0;
-            }
-            }
+            #/////// J6 ////////////////////////////////
+            #///find pulse every
+            if (J6cur < J6step):
+                
+                J6_PE = (HighStep / J6step);
+                #///find left over 1
+                J6_LO_1 = (HighStep - (J6step * J6_PE));
+                #///find skip 1
+                if (J6_LO_1 > 0):
+                
+                    J6_SE_1 = (HighStep / J6_LO_1);
+                
+                else:
+                
+                    J6_SE_1 = 0;
+                
+                #///find left over 2
+                if (J6_SE_1 > 0):
+                
+                    J6_LO_2 = HighStep - ((J6step * J6_PE) + ((J6step * J6_PE) / J6_SE_1));
+                
+                else:
+                
+                    J6_LO_2 = 0;
+                
+                #///find skip 2
+                if (J6_LO_2 > 0):
+                
+                    J6_SE_2 = (HighStep / J6_LO_2);
+                
+                else:
+                
+                    J6_SE_2 = 0;
+                
+                #/////////  J6  ///////////////
+                if (J6_SE_2 == 0):
+                
+                    J6_SE_2cur = (J6_SE_2 + 1);
+                
+                if (J6_SE_2cur != J6_SE_2):
+                
+                    J6_SE_2cur += 1;
+                    if (J6_SE_1 == 0):
+                    
+                        J6_SE_1cur = (J6_SE_1 + 1);
+                    
+                    if (J6_SE_1cur != J6_SE_1):
+                    
+                        J6_SE_1cur += 1;
+                        J6_PEcur += 1;
+                        if (J6_PEcur == J6_PE):
+                        
+                            J6cur += 1;
+                            J6_PEcur = 0;
+                            #digitalWrite(J6stepPin, LOW);
+                            #delayMicroseconds(curDelay);
+                            #digitalWrite(J6stepPin, HIGH);
+                            J6stepPin.value(0)
+                            time.sleep(curDelay / 1000000)
+                            J6stepPin.value(1)
+                        
+                    
+                    else:
+                    
+                        J6_SE_1cur = 0;
+                    
+                
+                else:
+                
+                    J6_SE_2cur = 0;
+                
+                
 
-            /////// TR ////////////////////////////////
-            ///find pulse every
-            if (TRcur < TRstep)
-            {
-            TR_PE = (HighStep / TRstep);
-            ///find left over 1
-            TR_LO_1 = (HighStep - (TRstep * TR_PE));
-            ///find skip 1
-            if (TR_LO_1 > 0)
-            {
-                TR_SE_1 = (HighStep / TR_LO_1);
-            }
-            else
-            {
-                TR_SE_1 = 0;
-            }
-            ///find left over 2
-            if (TR_SE_1 > 0)
-            {
-                TR_LO_2 = HighStep - ((TRstep * TR_PE) + ((TRstep * TR_PE) / TR_SE_1));
-            }
-            else
-            {
-                TR_LO_2 = 0;
-            }
-            ///find skip 2
-            if (TR_LO_2 > 0)
-            {
-                TR_SE_2 = (HighStep / TR_LO_2);
-            }
-            else
-            {
-                TR_SE_2 = 0;
-            }
-            /////////  TR  ///////////////
-            if (TR_SE_2 == 0)
-            {
-                TR_SE_2cur = (TR_SE_2 + 1);
-            }
-            if (TR_SE_2cur != TR_SE_2)
-            {
-                TR_SE_2cur = ++TR_SE_2cur;
-                if (TR_SE_1 == 0)
-                {
-                TR_SE_1cur = (TR_SE_1 + 1);
-                }
-                if (TR_SE_1cur != TR_SE_1)
-                {
-                TR_SE_1cur = ++TR_SE_1cur;
-                TR_PEcur = ++TR_PEcur;
-                if (TR_PEcur == TR_PE)
-                {
-                    TRcur = ++TRcur;
-                    TR_PEcur = 0;
-                    digitalWrite(TRstepPin, LOW);
-                    delayMicroseconds(curDelay);
-                    digitalWrite(TRstepPin, HIGH);
-                }
-                }
-                else
-                {
-                TR_SE_1cur = 0;
-                }
-            }
-            else
-            {
-                TR_SE_2cur = 0;
-            }
-            }
+            #/////// TR ////////////////////////////////
+            #///find pulse every
+            if (TRcur < TRstep):
+                
+                TR_PE = (HighStep / TRstep);
+                #///find left over 1
+                TR_LO_1 = (HighStep - (TRstep * TR_PE));
+                #///find skip 1
+                if (TR_LO_1 > 0):
+                
+                    TR_SE_1 = (HighStep / TR_LO_1);
+                
+                else:
+                
+                    TR_SE_1 = 0;
+                
+                #///find left over 2
+                if (TR_SE_1 > 0):
+                
+                    TR_LO_2 = HighStep - ((TRstep * TR_PE) + ((TRstep * TR_PE) / TR_SE_1));
+                
+                else:
+                
+                    TR_LO_2 = 0;
+                
+                #///find skip 2
+                if (TR_LO_2 > 0):
+                
+                    TR_SE_2 = (HighStep / TR_LO_2);
+                
+                else:
+                
+                    TR_SE_2 = 0;
+                
+                #/////////  TR  ///////////////
+                if (TR_SE_2 == 0):
+                
+                    TR_SE_2cur = (TR_SE_2 + 1);
+                
+                if (TR_SE_2cur != TR_SE_2):
+                
+                    TR_SE_2cur += 1;
+                    if (TR_SE_1 == 0):
+                    
+                        TR_SE_1cur = (TR_SE_1 + 1);
+                    
+                    if (TR_SE_1cur != TR_SE_1):
+                        
+                        TR_SE_1cur += 1;
+                        TR_PEcur += 1;
+                        if (TR_PEcur == TR_PE):
+                        
+                            TRcur += 1;
+                            TR_PEcur = 0;
+                            #digitalWrite(TRstepPin, LOW);
+                            #delayMicroseconds(curDelay);
+                            #digitalWrite(TRstepPin, HIGH);
+                            TRstepPin.value(0)
+                            time.sleep(curDelay / 1000000)
+                            TRstepPin.value(1)
+                        
+                        
+                    else:
+                    
+                        TR_SE_1cur = 0;
+                    
+                
+                else:
+                
+                    TR_SE_2cur = 0;
+                
+                
 
 
-            // inc cur step
-            highStepCur = ++highStepCur;
+            #// inc cur step
+            highStepCur += 1;
 
 
         
