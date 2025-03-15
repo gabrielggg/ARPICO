@@ -74,20 +74,27 @@ ledState = 'LED State Unknown'
 button = Pin(16, Pin.IN, Pin.PULL_UP)
 
 
-J1stepPin = Pin(5, Pin.OUT)
-J1dirPin = Pin(6, Pin.OUT)
-J2stepPin = Pin(7, Pin.OUT)
-J2dirPin = Pin(8, Pin.OUT)
-J3stepPin = Pin(9, Pin.OUT)
-J3dirPin = Pin(10, Pin.OUT)
-J4stepPin = Pin(11, Pin.OUT)
-J4dirPin = Pin(12, Pin.OUT)
-J5stepPin = Pin(13, Pin.OUT)
-J5dirPin = Pin(14, Pin.OUT)
-J6stepPin = Pin(15, Pin.OUT)
-J6dirPin = Pin(16, Pin.OUT)
-TRstepPin = Pin(17, Pin.OUT)
-TRdirPin = Pin(18, Pin.OUT)
+J1stepPin = Pin(1, Pin.OUT)
+J1dirPin = Pin(2, Pin.OUT)
+J2stepPin = Pin(3, Pin.OUT)
+J2dirPin = Pin(4, Pin.OUT)
+J3stepPin = Pin(5, Pin.OUT)
+J3dirPin = Pin(6, Pin.OUT)
+J4stepPin = Pin(7, Pin.OUT)
+J4dirPin = Pin(8, Pin.OUT)
+J5stepPin = Pin(9, Pin.OUT)
+J5dirPin = Pin(10, Pin.OUT)
+J6stepPin = Pin(11, Pin.OUT)
+J6dirPin = Pin(12, Pin.OUT)
+TRstepPin = Pin(13, Pin.OUT)
+TRdirPin = Pin(14, Pin.OUT)
+
+J1calPin = Pin(15, Pin.IN, Pin.PULL_UP)
+J2calPin = Pin(16, Pin.IN, Pin.PULL_UP)
+J3calPin = Pin(17, Pin.IN, Pin.PULL_UP)
+J4calPin = Pin(18, Pin.IN, Pin.PULL_UP)
+J5calPin = Pin(19, Pin.IN, Pin.PULL_UP)
+J6calPin = Pin(20, Pin.IN, Pin.PULL_UP)
 
 ssid = ''
 password = ''
@@ -326,6 +333,7 @@ def calRobot(calaxis,speed):
   #ser.write(command.encode())
   #ser.flushInput()
   print(command)
+  calRobotPico(J1caldrive,J2caldrive,J3caldrive,J4caldrive,J5caldrive,J6caldrive,J1step,J2step,J3step,J4step,J5step,J6step,speed)
   calvalue = "P"
   #manEntryField.delete(0, 'end')
   #manEntryField.insert(0,calvalue)
@@ -428,7 +436,308 @@ def calRobot(calaxis,speed):
   #savePosData()
 
 
+def calRobotPico(J1caldrive,J2caldrive,J3caldrive,J4caldrive,J5caldrive,J6caldrive,J1step,J2step,J3step,J4step,J5step,J6step,speed):
+    
 
+        ##///
+        J1caldir = J1caldrive
+        J2caldir = J2caldrive
+        J3caldir = J3caldrive
+        J4caldir = J4caldrive
+        J5caldir = J5caldrive
+        J6caldir = J6caldrive
+        ##///
+
+        ##///
+        SpeedIn = speed
+
+
+        ##//RESET COUNTERS
+        J1done = 0;
+        J2done = 0;
+        J3done = 0;
+        J4done = 0;
+        J5done = 0;
+        J6done = 0;
+
+        J1calStat = "0";
+
+        #//SET DIRECTIONS
+        #// J1 //
+        if (J1rotdir == 1 & J1caldir == 1):
+          #digitalWrite(J1dirPin, LOW);
+          #J1dirPin.value() == 0
+          J1dirPin.value(0)
+        
+        elif (J1rotdir == 0 & J1caldir == 1):
+          
+          J1dirPin.value(1)
+        
+        elif (J1rotdir == 1 & J1caldir == 0):
+          J1dirPin.value(1)
+        
+        elif (J1rotdir == 0 & J1caldir == 0):
+          J1dirPin.value(0)
+        
+
+        #// J2 //
+        if (J2rotdir == 1 & J2caldir == 1):
+          J2dirPin.value(0)
+        
+        elif (J2rotdir == 0 & J2caldir == 1):
+          J2dirPin.value(1)
+        
+        elif (J2rotdir == 1 & J2caldir == 0):
+          J2dirPin.value(1)
+        
+        elif (J2rotdir == 0 & J2caldir == 0):
+          J2dirPin.value(0)
+        
+
+        #// J3 //
+        if (J3rotdir == 1 & J3caldir == 1):
+
+          J3dirPin.value(0)
+        
+        elif (J3rotdir == 0 & J3caldir == 1):
+          J3dirPin.value(1)
+        
+        elif (J3rotdir == 1 & J3caldir == 0):
+          J3dirPin.value(1)
+        
+        elif (J3rotdir == 0 & J3caldir == 0):
+          J3dirPin.value(0)
+        
+
+        #// J4 //
+        if (J4rotdir == 1 & J4caldir == 1):
+          J4dirPin.value(0)
+        
+        elif (J4rotdir == 0 & J4caldir == 1):
+          J4dirPin.value(1)
+        
+        elif (J4rotdir == 1 & J4caldir == 0):
+          J4dirPin.value(1)
+        
+        elif (J4rotdir == 0 & J4caldir == 0):
+          J4dirPin.value(0)
+        
+
+        #// J5 //
+        if (J5rotdir == 1 & J5caldir == 1):
+          J5dirPin.value(0)
+        
+        elif (J5rotdir == 0 & J5caldir == 1):
+          J5dirPin.value(1)
+        
+        elif (J5rotdir == 1 & J5caldir == 0):
+          J5dirPin.value(1)
+        
+        elif (J5rotdir == 0 & J5caldir == 0):
+          J5dirPin.value(0)
+        
+
+        #// J6 //
+        if (J6rotdir == 1 & J6caldir == 1):
+          J6dirPin.value(0)
+        
+        elif (J6rotdir == 0 & J6caldir == 1):
+          J6dirPin.value(1)
+        
+        elif (J6rotdir == 1 & J6caldir == 0):
+          J6dirPin.value(1)
+        
+        elif (J6rotdir == 0 & J6caldir == 0):
+          J6dirPin.value(0)
+        
+
+        AdjSpeed = (SpeedIn / 100);
+        CalcRegSpeed = ((SpeedMult * 2) / AdjSpeed);
+        Speed = int(CalcRegSpeed);
+
+        #//DRIVE MOTORS FOR CALIBRATION
+        while (J1calPin.value() == 0 & J1done < J1step | J2calPin.value() == 0 & J2done < J2step | J3calPin.value() == 0 & J3done < J3step | J4calPin.value() == 0 & J4done < J4step | J5calPin.value() == 0 & J5done < J5step | J6calPin.value() == 0 & J6done < J6step):
+        
+          if (J1done < J1step & (J1calPin.value() == 0)):
+          
+            #digitalWrite(J1stepPin, LOW);
+            J1stepPin.value(0)
+          
+          #delayMicroseconds(5);
+          time.sleep(5 / 1000000)
+          if (J1done < J1step & (J1calPin.value() == 0)):
+          
+            J1stepPin.value(1)
+            J1done += 1;
+          
+          time.sleep(5 / 1000000)
+          if (J2done < J2step & (J2calPin.value() == 0)):
+          
+            J2stepPin.value(0)
+          
+          time.sleep(5 / 1000000)
+          if (J2done < J2step & (J2calPin.value() == 0)):
+          
+            J2stepPin.value(1)
+            J2done += 1;
+          
+          time.sleep(5 / 1000000)
+          if (J3done < J3step & (J3calPin.value() == 0)):
+          
+            J3stepPin.value(0)
+          
+          time.sleep(5 / 1000000)
+          if (J3done < J3step & (J3calPin.value() == 0)):
+          
+            J3stepPin.value(1)
+            J3done += 1;
+          
+          time.sleep(5 / 1000000)
+          if (J4done < J4step & (J4calPin.value() == 0)):
+          
+            J4stepPin.value(0)
+          
+          time.sleep(5 / 1000000)
+          if (J4done < J4step & (J4calPin.value() == 0)):
+          
+            J4stepPin.value(1)
+            J4done += 1;
+          
+          time.sleep(5 / 1000000)
+          if (J5done < J5step & (J5calPin.value() == 0)):
+          
+            J5stepPin.value(0)
+          
+          time.sleep(5 / 1000000)
+          if (J5done < J5step & (J5calPin.value() == 0)):
+          
+            J5stepPin.value(1)
+            J5done += 1;
+          
+          time.sleep(5 / 1000000)
+          if (J6done < J6step & (J6calPin.value() == 0)):
+          
+            J6stepPin.value(0)
+          
+          time.sleep(5 / 1000000)
+          if (J6done < J6step & (J6calPin.value() == 0)):
+          
+            J6stepPin.value(1)
+            J6done += 1;
+          
+          #///////////////DELAY BEFORE RESTARTING LOOP
+          time.sleep(Speed / 1000000)
+        
+        #//OVERDRIVE
+        OvrDrv = 0;
+        while (OvrDrv <= 20):
+        
+          if (J1step > 0):
+          
+            #digitalWrite(J1stepPin, LOW);
+            J1stepPin.value(0)
+          
+          if (J2step > 0):
+          
+            J2stepPin.value(0)
+          
+          if (J3step > 0):
+          
+            J3stepPin.value(0)
+          
+          if (J4step > 0):
+          
+            J4stepPin.value(0)
+          
+          if (J5step > 0):
+          
+            J5stepPin.value(0)
+          
+          if (J6step > 0):
+          
+            J6stepPin.value(0)
+          
+          #///////////////DELAY AND SET HIGH
+          time.sleep(Speed / 1000000)
+          if (J1step > 0):
+          
+            J1stepPin.value(1)
+          
+          if (J2step > 0):
+          
+            J2stepPin.value(1)
+          
+          if (J3step > 0):
+          
+            J3stepPin.value(1)
+          
+          if (J4step > 0):
+          
+            J4stepPin.value(1)
+          
+          if (J5step > 0):
+          
+            J5stepPin.value(1)
+          
+          if (J6step > 0):
+          
+            J6stepPin.value(1)
+          
+          OvrDrv += 1;
+          #///////////////DELAY BEFORE RESTARTING LOOP AND SETTING LOW AGAIN
+          time.sleep(Speed / 1000000)
+        
+        #//SEE IF ANY SWITCHES NOT MADE
+        #delay(500);
+        time.sleep(500 / 1000)
+        #///
+        J1pass = 1;
+        J2pass = 1;
+        J3pass = 1;
+        J4pass = 1;
+        J5pass = 1;
+        J6pass = 1;
+        #///
+        if (J1step > 0):
+          if (J1calPin.value() == 0):
+            J1pass = 0;
+          
+        
+        if (J2step > 0): 
+          if (J2calPin.value() == 0): 
+            J2pass = 0;
+          
+        
+        if (J3step > 0): 
+          if (J3calPin.value() == 0): 
+            J3pass = 0;
+          
+        
+        if (J4step > 0): 
+          if (J4calPin.value() == 0):
+            J4pass = 0;
+          
+        
+        if (J5step > 0):
+         if (J5calPin.value() == 0): 
+            J5pass = 0;
+          
+        
+        if (J6step > 0):
+         if (J6calPin.value() == 0):
+            J6pass = 0;
+          
+        
+        if ((J1pass + J2pass + J3pass + J4pass + J5pass + J6pass) == 6):
+        
+          Serial.print("P\r");
+        
+        else:
+        
+          Serial.print("F\r");
+        
+        inData = ""; #// Clear recieved buffer
+    
 
 
 
