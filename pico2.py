@@ -333,8 +333,8 @@ def calRobot(calaxis,speed):
   #ser.write(command.encode())
   #ser.flushInput()
   print(command)
-  calRobotPico(J1caldrive,J2caldrive,J3caldrive,J4caldrive,J5caldrive,J6caldrive,J1step,J2step,J3step,J4step,J5step,J6step,speed)
-  calvalue = "P"
+  calvalue = calRobotPico(J1caldrive,J2caldrive,J3caldrive,J4caldrive,J5caldrive,J6caldrive,J1step,J2step,J3step,J4step,J5step,J6step,speed)
+  #calvalue = "P"
   #manEntryField.delete(0, 'end')
   #manEntryField.insert(0,calvalue)
   global calStat
@@ -425,7 +425,7 @@ def calRobot(calaxis,speed):
     #almStatusLab2.config(text='CALIBRATION SUCCESSFUL', bg = "cornflowerblue")	
     #DisplaySteps()
   else:
-    if (calvalue == b'F'):
+    if (calvalue == "F"):
       calStat = 0
       print("calibrado fallo")
       #almStatusLab2.config(text="CALIBRATION FAILED", bg = "red")
@@ -730,11 +730,13 @@ def calRobotPico(J1caldrive,J2caldrive,J3caldrive,J4caldrive,J5caldrive,J6caldri
         
         if ((J1pass + J2pass + J3pass + J4pass + J5pass + J6pass) == 6):
         
-          Serial.print("P\r");
+          #Serial.print("P\r");
+          return("P")
         
         else:
         
-          Serial.print("F\r");
+          #Serial.print("F\r");
+          return("F")
         
         inData = ""; #// Clear recieved buffer
     
