@@ -235,7 +235,12 @@ def J1jogPos():
 def calRobotAll():
   calaxis = "111111"
   speed = "50"
-  calRobot(calaxis,speed)
+  estadoini = calRobot(calaxis,speed)
+  if estadoini == "calibrado":
+     print("calibrado inicial exito")
+     pass
+  else:
+     return False
   ### calc correct calibration direction
   if(J1caldir == J1motdir):
     J1caldrive = "1"
@@ -260,14 +265,19 @@ def calRobotAll():
   if(J6caldir == J6motdir):
     J6caldrive = "1"
   else:
-    J6caldrive = "0"        
+    J6caldrive = "0"     
   command = "MJA"+J1caldrive+"500"+"B"+J2caldrive+"500"+"C"+J3caldrive+"500"+"D"+J4caldrive+"500"+"E"+J5caldrive+"500"+"F"+J6caldrive+"500"+"S15G10H10I10K10"+"\n"
   #ser.write(command.encode())
   #ser.flushInput()
   print(command)
+  driveMotorsJ(J1caldrive,J2caldrive,J3caldrive,J4caldrive,J5caldrive,J6caldrive,1,500,500,500,500,500,500,0,15,10,10,10,10)
   speed = "8"
   time.sleep(2.5)
-  calRobot(calaxis,speed)
+  estado = calRobot(calaxis,speed)
+  if estado == "calibrado":
+     return True
+  else:
+     return False
 
 
 
@@ -422,15 +432,18 @@ def calRobot(calaxis,speed):
     #value=calibration.get(0,END)
     #pickle.dump(value,open("ARbot.cal","wb"))
     print("calibrado")
+    return("calibrado")
     #almStatusLab2.config(text='CALIBRATION SUCCESSFUL', bg = "cornflowerblue")	
     #DisplaySteps()
   else:
     if (calvalue == "F"):
       calStat = 0
       print("calibrado fallo")
+      return("calibradofailed")
       #almStatusLab2.config(text="CALIBRATION FAILED", bg = "red")
     else:
       print("no feedback from arduino")
+      return("calibradofailed")
       #almStatusLab2.config(text="NO CAL FEEDBACK FROM ARDUINO", bg = "red")	  
   #CalcFwdKin()	  
   #savePosData()
@@ -2254,9 +2267,9 @@ def MoveNew(J1out,J2out,J3out,J4out,J5out,J6out,newSpeed,ACCdur,ACCspd,DECdur,DE
 
 
 ###################################
-calRobotAll()
+estadoar3 = calRobotAll()
 # Listen for connections, serve client
-while True:
+while estadoar3:
     try:       
         cl, addr = s.accept()
         print('client connected from', addr)
@@ -2270,13 +2283,6 @@ while True:
         print( 'led on = ' + str(led_on))
         print( 'led off = ' + str(led_off))
         
-        if led_on == 8:
-            print("led on")
-            led.value(1)
-        if led_off == 8:
-            print("led off")
-            led.value(0)
-
         #################################################
         cmdType = "Move J"
         command = "Move J [*]  X) 68.76   Y) -0.024   Z) 733.607   W) -89.978   P) 0.95   R) -90.002   T) 40.0   Speed-25 Ad 15 As 10 Dd 20 Ds 5 $N"
@@ -2325,17 +2331,17 @@ while True:
         
         
         
-        ledState = "LED is OFF" if led.value() == 0 else "LED is ON" # a compact if-else statement
+        #ledState = "LED is OFF" if led.value() == 0 else "LED is ON" # a compact if-else statement
         
-        if button.value() == 1: # button not pressed
-            print("button NOT pressed")
-            buttonState = "Button is NOT pressed"
-        else:
-            print("button pressed")
-            buttonState = "Button is pressed"
+        #if button.value() == 1: # button not pressed
+        #    print("button NOT pressed")
+        #    buttonState = "Button is NOT pressed"
+        #else:
+        #    print("button pressed")
+        #    buttonState = "Button is pressed"
         
         # Create and send response
-        stateis = ledState + " and " + buttonState
+        stateis = "respuesta" + " and " + "prueba"
         response = html % stateis
         cl.send('HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n')
         cl.send(response)
